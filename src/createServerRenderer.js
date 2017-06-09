@@ -138,7 +138,6 @@ export default function createServerRenderer(_options) {
               </body>
             </html>
           `
-          console.log('html', html)
           res.type('html').send(html)
         })
       }))
