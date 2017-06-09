@@ -18,6 +18,8 @@ const sendError = (res, err) => {
   return res.status(500).send('Error loading initial state')
 }
 
+const evalSource = (req, source) => _.isFunction(source) ? source(req) : source || ''
+
 const defaults = {
   entries: ['shared', 'app'],
   webpackAssetsPath: path.resolve(__dirname, '../../../webpack-assets.json'),
@@ -107,24 +109,9 @@ export default function createServerRenderer(_options) {
               ga('send', 'pageview');
             </script>` : ''
 
-          let preScriptTags = ''
-          if (options.preScriptTags) {
-            if (_.isFunction(options.preScriptTags)) {
-              preScriptTags = options.preScriptTags(req)
-            }
-            else {
-              preScriptTags = options.preScriptTags
-            }
-          }
-          let postScriptTags = ''
-          if (options.postScriptTags) {
-            if (_.isFunction(options.postScriptTags)) {
-              postScriptTags = options.postScriptTags(req)
-            }
-            else {
-              postScriptTags = options.postScriptTags
-            }
-          }
+          const headerTags = evalSource(req, options.headerTags)
+          const preScriptTags = evalSource(req, options.preScriptTags)
+          const postScriptTags = evalSource(req, options.postScriptTags)
 
           const html = `
             <!DOCTYPE html>
@@ -137,6 +124,7 @@ export default function createServerRenderer(_options) {
                 ${head.script}
 
                 ${cssTags}
+                ${headerTags}
                 <script type="application/javascript">
                   window.__INITIAL_STATE__ = ${serialize(initialState, {isJSON: true})}
                 </script>
@@ -150,6 +138,7 @@ export default function createServerRenderer(_options) {
               </body>
             </html>
           `
+          console.log('html', html)
           res.type('html').send(html)
         })
       }))
