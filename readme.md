@@ -1,3 +1,12 @@
+## This package has moved to the [Frameworkstein repository](https://github.com/founderlab/frameworkstein/tree/master/packages/fl-react-server)
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 ## Server side renderer function for React, used in Frameworkstein apps
 
 [![version][version-badge]][package]
